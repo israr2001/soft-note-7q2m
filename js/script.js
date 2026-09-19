@@ -21,6 +21,8 @@
   const celebrateBtn = document.getElementById("celebrate-btn");
   const replayBtn = document.getElementById("replay-btn");
   const musicToggle = document.getElementById("music-toggle");
+  const musicFab = document.getElementById("music-fab");
+  const cakeBtn = document.getElementById("cake-btn");
   const bgMusic = document.getElementById("bg-music");
   const canvas = document.getElementById("confetti-canvas");
   const ctx = canvas.getContext("2d");
@@ -45,6 +47,7 @@
   let eggClicks = 0;
   let musicOn = false;
   let statsAnimated = false;
+  let candlesBlown = false;
   let confettiPieces = [];
   let confettiRunning = false;
 
@@ -99,28 +102,89 @@
     }
     lockError.hidden = false;
     lockInput.value = "";
+    lockInput.classList.add("is-wrong");
     lockInput.focus();
+    setTimeout(function () { lockInput.classList.remove("is-wrong"); }, 450);
   });
 
   spawnBackgroundDecor();
   sizeCanvas();
   window.addEventListener("resize", sizeCanvas);
 
+  function buzz(pattern) {
+    if (navigator.vibrate) {
+      try { navigator.vibrate(pattern); } catch (err) {}
+    }
+  }
+
+  // Little hearts wherever she taps.
+  const tapEmojis = ["💗", "✨", "🌸", "💫"];
+  document.addEventListener("pointerdown", function (event) {
+    if (!lockScreen.hidden) return;
+    for (let i = 0; i < 3; i += 1) {
+      const el = document.createElement("span");
+      el.className = "tap-heart";
+      el.textContent = tapEmojis[Math.floor(Math.random() * tapEmojis.length)];
+      el.style.left = event.clientX + "px";
+      el.style.top = event.clientY + "px";
+      el.style.setProperty("--x", (Math.random() * 70 - 35) + "px");
+      el.style.setProperty("--r", (Math.random() * 50 - 25) + "deg");
+      el.style.animationDelay = (i * 0.07) + "s";
+      document.body.appendChild(el);
+      setTimeout(function () { el.remove(); }, 1300);
+    }
+  }, { passive: true });
+
+  // Scroll progress bar for the main site.
+  const progressBar = document.querySelector("#scroll-progress i");
+  window.addEventListener("scroll", function () {
+    if (!progressBar || mainSite.hidden) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+    progressBar.style.width = (ratio * 100) + "%";
+  }, { passive: true });
+
   giftBox.addEventListener("click", openGift);
   replayBtn.addEventListener("click", replaySurprise);
   celebrateBtn.addEventListener("click", function () {
+    buzz([15, 30, 15]);
     launchConfetti(140);
+    burstHearts();
   });
+
+  document.querySelectorAll(".balloon").forEach(function (balloon) {
+    balloon.addEventListener("click", function () {
+      if (balloon.classList.contains("popped")) return;
+      balloon.classList.add("popped");
+      buzz(20);
+      popBalloonBits(balloon);
+      setTimeout(function () { balloon.hidden = true; }, 500);
+    });
+  });
+
+  if (cakeBtn) {
+    cakeBtn.addEventListener("click", function () {
+      if (candlesBlown) return;
+      candlesBlown = true;
+      cakeBtn.classList.add("is-blown");
+      buzz([15, 40, 15]);
+      launchConfetti(24);
+      spawnClickHearts(cakeBtn);
+    });
+  }
 
   document.querySelectorAll(".dash-card").forEach(function (card) {
     card.addEventListener("click", function () {
       const target = document.getElementById(card.getAttribute("data-target"));
       if (!target) return;
+      card.classList.add("is-opened");
       modalIcon.textContent = target.getAttribute("data-icon") || "";
       modalTitle.textContent = target.getAttribute("data-title") || "";
       modalBody.innerHTML = target.innerHTML;
       modalBody.lang = target.lang || "en";
+      buzz(12);
       showModal(cardModal);
+      spawnClickHearts(card);
     });
   });
 
@@ -130,12 +194,12 @@
   });
 
   surpriseEnBtn.addEventListener("click", function () {
-    surpriseEnMsg.textContent = nextUnique(englishSurprises, lastEnglish, function (i) { lastEnglish = i; });
+    setSurpriseMessage(surpriseEnMsg, nextUnique(englishSurprises, lastEnglish, function (i) { lastEnglish = i; }));
     spawnClickHearts(surpriseEnBtn);
   });
 
   surpriseUrBtn.addEventListener("click", function () {
-    surpriseUrMsg.textContent = nextUnique(romanUrduSurprises, lastUrdu, function (i) { lastUrdu = i; });
+    setSurpriseMessage(surpriseUrMsg, nextUnique(romanUrduSurprises, lastUrdu, function (i) { lastUrdu = i; }));
     spawnClickHearts(surpriseUrBtn);
   });
 
@@ -161,21 +225,27 @@
   });
 
   musicToggle.addEventListener("click", toggleMusic);
+  if (musicFab) musicFab.addEventListener("click", toggleMusic);
 
-  const observer = new IntersectionObserver(function (entries) {
+  const revealObserver = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (entry.isIntersecting && !statsAnimated) {
-        statsAnimated = true;
-        animateStats();
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        if (entry.target.id === "stats" && !statsAnimated) {
+          statsAnimated = true;
+          animateStats();
+        }
       }
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
 
-  const statsSection = document.getElementById("stats");
-  if (statsSection) observer.observe(statsSection);
+  document.querySelectorAll(".reveal").forEach(function (el) {
+    revealObserver.observe(el);
+  });
 
   function openGift() {
     startMusic();
+    buzz([15, 30, 15, 30, 30]);
     giftBox.classList.add("is-opening");
     burstHearts();
     launchConfetti(90);

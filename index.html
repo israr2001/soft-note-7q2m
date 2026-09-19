@@ -15,6 +15,7 @@
 </head>
 <body>
 
+<div id="scroll-progress" class="scroll-progress" aria-hidden="true"><i></i></div>
 <div id="bg-decor" class="bg-decor" aria-hidden="true"></div>
 
 <section id="lock-screen" class="lock-screen">
@@ -32,6 +33,11 @@
 </section>
 
 <section id="landing" class="landing" hidden>
+  <div class="bunting" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+  <button type="button" class="balloon balloon-left" aria-label="Pop the balloon">🎈</button>
+  <button type="button" class="balloon balloon-right" aria-label="Pop the balloon">🎈</button>
   <div class="landing-glow" aria-hidden="true"></div>
   <div class="landing-content">
     <p class="landing-kicker">A little something made only for you</p>
@@ -45,9 +51,21 @@
         <span class="gift-body" aria-hidden="true"></span>
         <span class="gift-ribbon-v" aria-hidden="true"></span>
         <span class="gift-bow" aria-hidden="true">🎀</span>
+        <span class="gift-sparkle s1" aria-hidden="true">✨</span>
+        <span class="gift-sparkle s2" aria-hidden="true">✨</span>
+        <span class="gift-sparkle s3" aria-hidden="true">💫</span>
       </button>
-      <p class="gift-hint">There's something waiting for you 🎁</p>
+      <p class="gift-hint">Tap the gift to unwrap it 🎁</p>
     </div>
+
+    <button type="button" id="cake-btn" class="cake" aria-label="Tap to blow out the candles">
+      <span class="candle"><i></i></span>
+      <span class="candle"><i></i></span>
+      <span class="candle"><i></i></span>
+      <span class="cake-top"></span>
+      <span class="cake-base"></span>
+      <span class="cake-hint">Tap the cake 🎂</span>
+    </button>
   </div>
 </section>
 
@@ -55,47 +73,55 @@
 
 <main id="main-site" class="main-site" hidden>
 
-  <header class="hero-header">
+  <header class="hero-header reveal">
     <p class="eyebrow">Written with love, teasing, and a lot of smiling</p>
     <h2 class="hero-title">Tayyaba's Birthday Corner</h2>
     <p class="hero-sub">Scroll gently. Tap freely. Everything here belongs to you.</p>
+    <div class="party-row" aria-hidden="true">
+      <span>🎂</span><span>🎀</span><span>✨</span><span>🎈</span><span>💗</span>
+    </div>
   </header>
 
-  <section id="dashboard" class="section">
+  <section id="dashboard" class="section reveal">
     <p class="section-kicker">Open a little piece of my heart</p>
     <h2 class="section-title">Your Birthday Cards</h2>
     <p class="section-subtitle">Tap any card below. Each one has something waiting inside.</p>
 
     <div class="card-grid">
 
-      <button class="dash-card" data-target="content-1">
+      <button class="dash-card tone-1" data-target="content-1">
+        <span class="dash-ribbon" aria-hidden="true"></span>
         <span class="dash-icon">✨</span>
         <span class="dash-title">Your Birthday ✨</span>
-        <span class="dash-tap">Tap to open</span>
+        <span class="dash-tap">Tap to unwrap</span>
       </button>
 
-      <button class="dash-card" data-target="content-2">
+      <button class="dash-card tone-2" data-target="content-2">
+        <span class="dash-ribbon" aria-hidden="true"></span>
         <span class="dash-icon">❤️</span>
         <span class="dash-title">Ek Choti Si Baat ❤️</span>
-        <span class="dash-tap">Tap to open</span>
+        <span class="dash-tap">Tap to unwrap</span>
       </button>
 
-      <button class="dash-card" data-target="content-3">
+      <button class="dash-card tone-3" data-target="content-3">
+        <span class="dash-ribbon" aria-hidden="true"></span>
         <span class="dash-icon">💍</span>
         <span class="dash-title">To My Future Wife 💍</span>
-        <span class="dash-tap">Tap to open</span>
+        <span class="dash-tap">Tap to unwrap</span>
       </button>
 
-      <button class="dash-card" data-target="content-4">
+      <button class="dash-card tone-4" data-target="content-4">
+        <span class="dash-ribbon" aria-hidden="true"></span>
         <span class="dash-icon">🌙</span>
         <span class="dash-title">Aap Aur Main 🌙</span>
-        <span class="dash-tap">Tap to open</span>
+        <span class="dash-tap">Tap to unwrap</span>
       </button>
 
-      <button class="dash-card" data-target="content-5">
+      <button class="dash-card tone-5" data-target="content-5">
+        <span class="dash-ribbon" aria-hidden="true"></span>
         <span class="dash-icon">💗</span>
         <span class="dash-title">One More Thing 💗</span>
-        <span class="dash-tap">Tap to open</span>
+        <span class="dash-tap">Tap to unwrap</span>
       </button>
 
     </div>
@@ -162,7 +188,7 @@
 
   </div>
 
-  <section id="stats" class="section">
+  <section id="stats" class="section reveal">
     <p class="section-kicker">Just a few playful numbers</p>
     <h2 class="section-title">Some Fun Birthday Facts</h2>
 
@@ -191,21 +217,25 @@
     </div>
   </section>
 
-  <section id="surprise" class="section alt-bg">
+  <section id="surprise" class="section alt-bg reveal">
     <p class="section-kicker">Go on, tap it</p>
     <h2 class="section-title">Tap for a Little Surprise 🎁</h2>
     <p class="section-subtitle">It is your birthday privilege. Tap the heart as many times as you like.</p>
 
-    <button id="surprise-en-btn" class="surprise-heart" aria-label="Tap for a surprise message">💗</button>
-    <p id="surprise-en-msg" class="surprise-message" aria-live="polite">Tap the heart above</p>
+    <div class="surprise-stage">
+      <button id="surprise-en-btn" class="surprise-heart" aria-label="Tap for a surprise message">💗</button>
+      <p id="surprise-en-msg" class="surprise-message" aria-live="polite">Tap the heart above</p>
+    </div>
 
     <p class="section-subtitle surprise-switch">Yeh choti si shararat bhi aapke liye hai</p>
 
-    <button id="surprise-ur-btn" class="surprise-heart alt" aria-label="Ek surprise message ke liye tap karen">🎀</button>
-    <p id="surprise-ur-msg" class="surprise-message" aria-live="polite">Upar wala bow tap karein</p>
+    <div class="surprise-stage">
+      <button id="surprise-ur-btn" class="surprise-heart alt" aria-label="Ek surprise message ke liye tap karen">🎀</button>
+      <p id="surprise-ur-msg" class="surprise-message" aria-live="polite">Upar wala bow tap karein</p>
+    </div>
   </section>
 
-  <section id="final" class="section final-section">
+  <section id="final" class="section final-section reveal">
     <p class="section-kicker">The last little note</p>
     <h2 class="section-title">For You, Tayyaba ❤️</h2>
 
@@ -240,6 +270,8 @@
     <p>Made with a lot of love, a little teasing, and endless smiling.</p>
     <button id="easter-egg" class="easter-heart" aria-label="A tiny secret heart">🤍</button>
   </footer>
+
+  <button id="music-fab" class="music-fab" aria-label="Toggle music" aria-pressed="false">🎵</button>
 
 </main>
 
