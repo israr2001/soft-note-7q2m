@@ -288,6 +288,22 @@
     }
   }
 
+  function popBalloonBits(balloon) {
+    const rect = balloon.getBoundingClientRect();
+    const bits = ["🎉", "✨", "💗", "🎊"];
+    for (let i = 0; i < 8; i += 1) {
+      const el = document.createElement("span");
+      el.className = "pop-bit";
+      el.textContent = bits[i % bits.length];
+      el.style.left = rect.left + rect.width / 2 + "px";
+      el.style.top = rect.top + rect.height / 2 + "px";
+      el.style.setProperty("--x", (Math.random() * 140 - 70) + "px");
+      el.style.setProperty("--y", (Math.random() * 140 - 70) + "px");
+      burstLayer.appendChild(el);
+      setTimeout(function () { el.remove(); }, 800);
+    }
+  }
+
   function setSurpriseMessage(el, message) {
     el.textContent = message;
     el.classList.remove("is-fresh");
