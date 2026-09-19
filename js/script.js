@@ -288,6 +288,13 @@
     }
   }
 
+  function setSurpriseMessage(el, message) {
+    el.textContent = message;
+    el.classList.remove("is-fresh");
+    void el.offsetWidth; // restart the pop animation
+    el.classList.add("is-fresh");
+  }
+
   function nextUnique(list, lastIndex, setLast) {
     if (list.length === 1) return list[0];
     let index = lastIndex;
